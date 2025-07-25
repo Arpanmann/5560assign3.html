@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Webpage Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .area {
+            border: 2px solid black;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #area3 {
+            background-image: url('https://www.macworld.com/wp-content/uploads/2025/02/macos-mojave-photos-my-photo-stream-bordered.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 250px;
+            overflow: hidden;
+            color: white;
+        }
+
+        .animatedPhoto {
+            position: absolute;
+            height: 80px;
+            left: -100px;
+        }
+
+        #description {
+            font-size: 16px;
+        }
+
+        .small { font-size: 12px; font-family: Arial; color: red; }
+        .medium { font-size: 16px; font-family: 'Courier New'; color: blue; }
+        .large { font-size: 20px; font-family: Verdana; color: green; }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        let counter = 0;
+        let interval;
+
+        $(document).ready(function () {
+
+            // Counter logic
+            $('input[type=radio][name=direction]').change(function () {
+                clearInterval(interval);
+                interval = setInterval(function () {
+                    if ($('#up').is(':checked')) {
+                        counter++;
+                    } else {
+                        counter--;
+                    }
+                    $('#result').val(counter);
+                }, 500);
+            });
+
+            // Show/hide and speak
+            $('#hideBtn').click(function () {
+                $('#description').hide();
+            });
+
+            $('#showBtn').click(function () {
+                $('#description').show();
+            });
+
+            $('#speakBtn').click(function () {
+                const msg = new SpeechSynthesisUtterance($("#description").text());
+                window.speechSynthesis.speak(msg);
+            });
+
+            // Animate both photos
+            function movePhotos() {
+                $('.animatedPhoto').each(function () {
+                    const speed = Math.floor(Math.random() * 5) + 1;
+                    const $img = $(this);
+                    function animateImg() {
+                        $img.animate({ left: '+=10px' }, speed * 100, function () {
+                            if (parseInt($img.css('left')) > $('#area3').width()) {
+                                $img.css('left', '-100px');
+                            }
+                            animateImg();
+                        });
+                    }
+                    animateImg();
+                });
+            }
+
+            movePhotos(); // Start animation
+        });
+    </script>
+</head>
+
+<body>
+
+    <!-- Area #1 -->
+    <div class="area" id="area1">
+        <h3>Area #1: Counter Control</h3>
+        <input type="text" placeholder="Textbox 1"><br><br>
+        <input type="text" placeholder="Textbox 2"><br><br>
+        <input type="text" id="result" readonly><br><br>
+
+        <input type="radio" name="direction" id="up"> Increase<br>
+        <input type="radio" name="direction" id="down"> Decrease<br>
+    </div>
+<!-- Area #2 -->
+    <div class="area" id="area2">
+        <h3>Area #2: About My Hometown</h3>
+        <div id="description">
+            <p class="small">My hometown is peaceful and filled with greenery.</p>
+            <p class="medium">There are beautiful parks and friendly people everywhere.</p>
+            <p class="large">I love the festivals and the food in my hometown!</p>
+        </div>
+        <button id="speakBtn">Speak</button>
+        <button id="hideBtn">Hide</button>
+        <button id="showBtn">Show</button>
+    </div>
+<!-- Area #3 -->
+    <div class="area" id="area3">
+        <h3>Area #3: My Animated Photo</h3>
+        <img class="animatedPhoto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ467SyO1sRDFWJVrSORFXmjZezgCuT889WjQ&s" alt="Photo 1" style="top: 50px;">
+        <img class="animatedPhoto" src="https://www.macworld.com/wp-content/uploads/2025/02/macos-mojave-photos-my-photo-stream-bordered.png" alt="Photo 2" style="top: 130px;">
+    </div>
+
+</body>
+</html>
